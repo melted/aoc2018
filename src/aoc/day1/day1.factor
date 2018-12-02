@@ -9,7 +9,6 @@ IN: aoc.day1
    32 <hash-set> :> scanned
    0 :> acc!
    [ seq [ acc + dup dup acc! scanned in? 
-        [ scanned adjoin f ] unless ] map-find ]
-   [ drop ] until ;
+        [ scanned adjoin f ] unless ] map-find ] [ drop ] until ;
 
 : solve ( -- n n ) read-data [ sum ] [ find-rep ] bi ;
