@@ -18,17 +18,14 @@ IN: aoc.day3
 
 : get-pos ( arr x y -- n ) pos>n swap nth ;
 
-:: get-area ( x y dx dy -- seq )
-    x x dx + [a,b)
-    y y dy + [a,b)
-    cartesian-product concat ;
+: get-area ( x y dx dy -- seq )
+    swapd [ dupd + [a,b) ] 2bi@ cartesian-product concat ;
 
 : inc-area ( seq arr -- ) [ 1 tail first4 get-area ] dip
     '[ _ swap first2 inc-pos ] each ;
 
-:: make-fabric ( seq -- arr )
-    1000000 0 <array> :> fabric
-       seq [ fabric inc-area ] each fabric ;
+: make-fabric ( seq -- arr )
+    1000000 0 <array> tuck '[ _ inc-area ] each ;
 
 : check-area? ( seq arr -- ? )
     [ first4 get-area ] dip
