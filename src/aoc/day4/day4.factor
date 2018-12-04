@@ -38,5 +38,10 @@ SINGLETONS: doze wake ;
 
 : find-guard ( seq -- n n ) [ first ] sort-with collect-data [ sum ] assoc-map [ [ concat histogram ] assoc-map ] dip ;
 
+: find-max ( ht -- n n ) >alist [ second ] sort-with last first2 ;
 
-: solve ( -- n n ) read-data find-guard ;
+: find-count ( ht -- n n ) >alist [ second second ] sort-with last first2 first ;
+
+: solve ( -- n n ) read-data find-guard
+    [ find-max drop swap dupd at find-max drop * ]
+    [ drop [ find-max 2array ] assoc-map find-count * ] 2bi ;
