@@ -36,7 +36,6 @@ void solve(int t, int n) {
 void solve2() {
     state s;
     vector<char> target({ 5, 4, 0, 3, 9, 1});
-    int offset;
     while (true) {
         s.one_round();
         for (int i : { 0,1 })
