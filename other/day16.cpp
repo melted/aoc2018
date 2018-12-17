@@ -71,7 +71,6 @@ void gtrr(int a, int b, int c, vector<int>& regs) {
     regs[c] = regs[a] > regs[b] ? 1:0;
 }
 
-
 void eqir(int a, int b, int c, vector<int>& regs) {
     regs[c] = a == regs[b] ? 1:0;
 }
