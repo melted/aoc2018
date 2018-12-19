@@ -1,0 +1,45 @@
+#ip 4
+addi 4 16 4 // jmp init
+start:
+    seti 1 4 3 // r3 <- 1
+outer:
+    seti 1 3 5 // r5 <- 1
+loop:
+    mulr 3 5 1 // r1 <- r3 * r5 
+    eqrr 1 2 1 // r1 <- r1 == r2
+    addr 1 4 4 // jeq here
+    addi 4 1 4 // jmp there
+here:
+    addr 3 0 0 // r0 <- r3 + r0
+there:
+    addi 5 1 5 // r5 <- r5 + 1
+    gtrr 5 2 1 // r1 <- r5 > r2
+    addr 4 1 4 // jgt break 
+    seti 2 9 4 // jmp loop
+break:
+    addi 3 1 3 // r3 <- r3 + 1
+    gtrr 3 2 1 // r1 <- r3 > r2
+    addr 1 4 4 // jgt break2
+    seti 1 6 4 // jmp outer
+    mulr 4 4 4 // stop!
+init:
+    addi 2 2 2 // r2 <- r2 + 2
+    mulr 2 2 2 // r2 <- r2 * r2
+    mulr 4 2 2 // r2 <- r2 * pc (19)
+    muli 2 11 2 // r2 <- r2 * 11
+    addi 1 2 1 // r1 <- r1 + 2
+    mulr 1 4 1 // r1 <- r1 * pc (22)
+    addi 1 7 1 // r1 <- r1 + 7
+    addr 2 1 2 // r2 <- r2 + r1
+    addr 4 0 4 // bgtz r0 r0isone: 
+    seti 0 8 4 // jmp start;
+r0isone:
+    setr 4 3 1 // r1 <- pc (27)
+    mulr 1 4 1 // r1 <- r1*pc (28)
+    addr 4 1 1 // r1 <- r1+pc(29)
+    mulr 4 1 1 // r1 <- r1*pc (30)
+    muli 1 14 1 // r1 <- r1*14
+    mulr 1 4 1 // r1 <- r1*pc(31)
+    addr 2 1 2 // r2 <- r2 + r1 
+    seti 0 3 0 // r0 <- 0
+    seti 0 6 4 // jmp start
