@@ -15,10 +15,7 @@ using chart = vector<vector<set<pos>>>;
 chart area;
 
 map<int, pos> offset = {
-    {'N', {0, -1}},
-    { 'E', {1, 0}},
-    { 'W', {-1, 0}},
-    { 'S', {0, 1}}
+    { 'N', { 0, -1 } }, { 'E', { 1, 0 } }, { 'W', { -1, 0 } }, { 'S', { 0, 1 } }
 };
 
 string read_data() {
@@ -26,10 +23,6 @@ string read_data() {
     string out;
     getline(input, out);
     return out;
-}
-
-set<pos>& get(pos p) {
-    return area[p.second][p.first];
 }
 
 set<pos> parse(istringstream& sin, pos start) {
@@ -55,10 +48,8 @@ set<pos> parse(istringstream& sin, pos start) {
             pos os = offset[ch];
             pos prev = *(terms.begin());
             pos np = { prev.first+os.first, prev.second+os.second };
-            set<pos>& n = get(np);
-            n.insert(prev);
-            set<pos>& p = get(prev);
-            p.insert(np);
+            area[np.second][np.first].insert(prev);
+            area[prev.second][prev.first].insert(np);
             terms = { np };
         }
     }
@@ -73,7 +64,7 @@ pair<int, int> cost(pos p) {
     while(to_handle.size()) {
         set<pos> next;
         for(const pos& pt : to_handle) {
-            for (auto z : get(pt)) {
+            for (auto z : area[pt.second][pt.first]) {
                 if (!handled.count(z)) next.insert(z);
             }
             if (cost >= 1000) expensive++;
@@ -86,12 +77,11 @@ pair<int, int> cost(pos p) {
 }
 
 pair<int, int> solve(string s) {
-    area.clear();
     area.resize(200);
     for (auto& r : area) r.resize(200);
     istringstream stream(s);
     auto terminals = parse(stream, { 100, 100 });
-    return cost({ 100, 100});
+    return cost({ 100, 100 });
 }
 
 int main() {
