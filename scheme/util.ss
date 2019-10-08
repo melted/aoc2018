@@ -1,0 +1,6 @@
+(define (histogram xs)
+  (define counts (make-eq-hashtable))
+  (define (update x)
+    (hashtable-update! counts x (lambda (n) (+ n 1)) 0))
+  (for-each update xs)
+  counts)
