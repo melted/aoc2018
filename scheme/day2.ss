@@ -42,11 +42,9 @@
 
 (define (solve2)
   (let loop ((str (car vals)) (xs (cdr vals)))
-    (let inner ((l xs))
-      (let ((s (small-diff str (car l))))
-        (if s
-          s
-          (if (null? (cdr l))
-            (if (null? (cdr xs)) #f (loop (car xs) (cdr xs)))
-            (inner (cdr l))))))))
+    (let ((v (exists (lambda (s) (small-diff str s)) xs)))
+      (if v v (if (null? (cdr xs)) #f (loop (car xs) (cdr xs)))))))
+
+(display (solve2))
+(newline)
   

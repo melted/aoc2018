@@ -4,3 +4,13 @@
     (hashtable-update! counts x (lambda (n) (+ n 1)) 0))
   (for-each update xs)
   counts)
+
+(define (string-split s cs)
+  (define len (string-length s))
+  (let loop ((vs '()) (pos 0) (last 0))
+    (if (< pos len)
+      (let ((cc (string-ref s pos)))
+        (if (memq cc cs)
+          (loop (cons (substring s last pos) vs) (+ 1 pos) (+ 1 pos))
+          (loop vs (+ 1 pos) last)))
+      (reverse (cons (substring s last len) vs)))))
