@@ -7,10 +7,20 @@
 
 (define (string-split s cs)
   (define len (string-length s))
+  (define splits (if (string? cs) (string->list cs) cs))
   (let loop ((vs '()) (pos 0) (last 0))
     (if (< pos len)
       (let ((cc (string-ref s pos)))
-        (if (memq cc cs)
+        (if (memq cc splits)
           (loop (cons (substring s last pos) vs) (+ 1 pos) (+ 1 pos))
           (loop vs (+ 1 pos) last)))
       (reverse (cons (substring s last len) vs)))))
+
+(define (get-lines path)
+  (call-with-input-file path
+    (lambda (p)
+      (let loop ((vs '()))
+        (let ((d (get-line p)))
+          (if (eof-object? d)
+            (reverse vs)
+            (loop (cons d vs))))))))

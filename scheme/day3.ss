@@ -1,21 +1,14 @@
 ;; day3
 (load "util.ss")
  
-(define vals 
-  (call-with-input-file "../data/input3.txt"
-    (lambda (p)
-      (let loop ((vs '()))
-        (let ((d (get-line p)))
-          (if (eof-object? d)
-            (reverse vs)
-            (loop (cons d vs))))))))
+(define vals (get-lines "../data/input3.txt"))
 
 (define (process-val v)
   (list->vector
     (map string->number
       (filter 
         (lambda (x) (not (string=? "" x))) 
-        (string-split v (string->list "#x@:, "))))))
+        (string-split v "#x@:, ")))))
 
 (define fabric (make-vector 1000000 0))
 
