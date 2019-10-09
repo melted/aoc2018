@@ -58,14 +58,17 @@
   sched)
     
 
-(define (max-index v)
+(define (max-index-values v)
   (let loop ((n 0) (max 0) (maxi 0))
     (if (= n (vector-length v))
-      maxi
+      (values maxi max)
       (let ((u (vector-ref v n)))
         (if (> u max)
           (loop (+ n 1) u n)
           (loop (+ n 1) max maxi))))))
+
+(define (max-index v)
+  (let-values (((i v) (max-index-values v))) i))
 
 (define (solve1)
   (define (sum-cell ts)
