@@ -1,9 +1,7 @@
 ;; day 5
 
 (load "util.ss")
-(define polymer (car (get-lines "../data/input5.txt")))
-
-(define poly2 (string->list polymer))
+(define poly2 (string->list (car (get-lines "../data/input5.txt"))))
 
 (define (reduce xs x)
   (if (null? xs)
@@ -14,7 +12,7 @@
         (cons x xs)))))
 
 (define (alt-solve pp)
-  (length (fold-left reduce (list (car pp)) (cdr pp))))
+  (length (fold-left reduce '() pp)))
 
 (define (filtered pp)
   (lambda (ch)
