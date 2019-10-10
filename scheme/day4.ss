@@ -2,44 +2,28 @@
 
 (load "util.ss")
 
-(define vals (get-lines "../data/input4.txt"))
+(define vals  (list-sort string<? (get-lines "../data/input4.txt")))
 
-(define (process-val v)
-  (define parts (list->vector (string-split v "[]-: ")))
-  (define type
+(define (parse-data vs) 
+  (define gds (make-eq-hashtable))
+  (define (parse str)
+    (define parts (list->vector (string-split str "[]-: ")))
     (case (vector-ref parts 7)
-      (("Guard") 'guard)
-      (("falls") 'sleep)
-      (("wakes") 'wake)))
-  (if (symbol=? type 'guard)
-    (vector type 
-      (let ((g (vector-ref parts 8)))
-        (string->number (substring g 1 (string-length g)))))
-    (vector type (string->number (vector-ref parts 5)))))
+      (("Guard") (vector-ref parts 8))
+      (("falls" "wakes") (string->number (vector-ref parts 5)))))
+  (define parsed (map parse vs))
+  (let loop ((l parsed) (curr-gd #f))
+    (if (null? l)
+      gds
+      (let ((a (car l)))
+        (if (string? a)
+          (loop (cdr l) (string->number (substring a 1 (string-length a))))
+          (let ((update (lambda (xs) 
+                          (cons (vector a (cadr l)) xs))))
+            (hashtable-update! gds curr-gd update '())
+            (loop (cddr l) curr-gd)))))))
 
-(define dat (map process-val (list-sort string<? vals)))
-
-(define gds (make-eq-hashtable))
-
-(define (fill-table xs)
-  (let loop ((l xs))
-    (define gid (vector-ref (car l) 1))
-    (if (null? (cdr l))
-      #f
-      (if (symbol=? 'guard (vector-ref (cadr l) 0))
-        (loop (cdr l))
-        (let inner ((ll (cdr l)))
-          (define slp (vector-ref (car ll) 1))
-          (define wk (vector-ref (cadr ll) 1))
-          (hashtable-update! gds gid (lambda (v) (cons (vector slp wk) v)) '())
-          (if (null? (cddr ll))
-            #f
-            (if (symbol=? 'guard (vector-ref (caddr ll) 0))
-              (loop (cddr ll))
-              (inner (cddr ll)))))))))
-
-(fill-table dat)
-
+(define gds (parse-data vals))
 (define (sleep-time v)
   (- (vector-ref v 1) (vector-ref v 0)))
 
@@ -61,14 +45,14 @@
 (define (max-index-values v)
   (let loop ((n 0) (max 0) (maxi 0))
     (if (= n (vector-length v))
-      (values maxi max)
+      (cons maxi max)
       (let ((u (vector-ref v n)))
         (if (> u max)
           (loop (+ n 1) u n)
           (loop (+ n 1) max maxi))))))
 
 (define (max-index v)
-  (let-values (((i v) (max-index-values v))) i))
+  (car (max-index-values v)))
 
 (define (solve1)
   (define (sum-cell ts)
@@ -76,7 +60,15 @@
   (define vs (map sum-cell (vector->list (hashtable-cells gds))))
   (define sorted (list-sort (lambda (v1 v2) (> (cdr v1) (cdr v2))) vs))
   (define gid (car (car sorted)))
-  (define sched (create-schedule (hashtable-ref gds gid 0)))
+  (define sched (create-schedule (hashtable-ref gds gid "")))
   (* gid (max-index sched)))
 
 (display (solve1))
+
+(define (solve2)
+  (define (prc ys) (cons (car ys) (max-index-values (create-schedule (cdr ys)))))
+  (define xs (map prc (vector->list (hashtable-cells gds))))
+  (define top (car (list-sort (lambda (a b) (> (cddr a) (cddr b))) xs)))
+  (* (car top) (cadr top)))
+(newline)
+(display (solve2))
