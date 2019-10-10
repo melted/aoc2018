@@ -21,3 +21,15 @@
       (if (= len (string-length ns))
         len
         (loop ns (string-length ns))))))
+
+(define (remove-char str)
+  (lambda (c)
+    (define s (string-copy str))
+    (do ((p 0 (+ p 1)))
+        ((= p (string-length s)) (collapse s))
+          (when (char-ci=? (string-ref s p) c)
+            (string-set! s p #\!)))))
+
+(define (solve2)
+  (define candidates (map (remove-char polymer) (string->list "abcdefghijklmnopqrstuvxwyz")))
+  (car (list-sort < (map solve1 candidates))))
