@@ -24,3 +24,10 @@
           (if (eof-object? d)
             (reverse vs)
             (loop (cons d vs))))))))
+
+(define (trim str)
+  (define (munch xs)
+    (if (char-whitespace? (car xs))
+      (munch (cdr xs))
+      xs))
+  (list->string (reverse (munch (reverse (munch (string->list str)))))))
