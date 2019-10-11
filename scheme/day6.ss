@@ -21,9 +21,6 @@
     (+ (abs (- (point-x p1) (point-x p2)))
       (abs (- (point-y p1) (point-y p2))))))
 
-(define (inc-score p)
-  (poi-score-set! p (+ (poi-score p) 1)))
-
 (define min-x (apply min (map point-x data)))
 (define max-x (apply max (map point-x data)))
 
@@ -45,7 +42,8 @@
                (set! region (+ region 1)))
             (if (or (= x min-x) (= x max-x) (= y min-y) (= y max-y))
               (poi-finite?-set! low #f)
-              (when (poi-finite? low) (inc-score low))))))
+              (when (poi-finite? low)
+                 (poi-score-set! low (+ (poi-score low) 1)))))))
   (cons (apply max (map poi-score (filter poi-finite? data))) region))
 
 (display (solve))
