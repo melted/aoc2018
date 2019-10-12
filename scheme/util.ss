@@ -31,3 +31,6 @@
       (munch (cdr xs))
       xs))
   (list->string (reverse (munch (reverse (munch (string->list str)))))))
+
+(define (dump . xs)
+  (for-each (lambda (x) (display x) (newline)) xs))
