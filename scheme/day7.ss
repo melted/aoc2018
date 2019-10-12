@@ -1,5 +1,4 @@
 ;; day 7 
-
 (load "util.ss")
 
 (define (parse-data str) 
@@ -11,12 +10,7 @@
 (define (make-blocklist)
   (define blocks (make-hashtable string-hash string=?))
   (define (add-block p)
-    (hashtable-update! 
-      blocks 
-      (cdr p)
-      (lambda (x)
-        (cons (car p) x))
-      '()))
+    (hashtable-update! blocks (cdr p) (lambda (x) (cons (car p) x)) '()))
   (map add-block data)
   blocks)
 
@@ -29,7 +23,6 @@
   (list-sort string<? (vector->list (hashtable-keys available))))
 
 (define (solve)
-  (define start (find-available data))
   (define blocks (make-blocklist))
   (define (remove-block c)
     (vector-for-each (lambda (k) 
@@ -43,7 +36,7 @@
             (remove-block unblocked)
             (worker (remove unblocked left) (cons unblocked acc)))
           #f))))
-  (fold-left string-append "" (worker start '())))
+  (fold-left string-append "" (worker (find-available data) '())))
 
 
 
