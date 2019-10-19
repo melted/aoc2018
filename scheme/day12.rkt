@@ -3,9 +3,9 @@
 
 (define (make-start)
   (define init-state (list 1 2 5 7 10 11 14 15 18 19 23 24 25 26 27
-                         29 35 38 41 42 44 45 46 48 50 51 52 53
-                         60 68 71 72 73 75 77 79 80 82 84 86 87 88
-                         92 93 95 96 97 99))
+                           29 35 38 41 42 44 45 46 48 50 51 52 53
+                           60 68 71 72 73 75 77 79 80 82 84 86 87 88
+                           92 93 95 96 97 99))
   (define v (make-vector 1024 0))
   (for ((i init-state)) (vector-set! v (+ i 512) 1))
   v)
@@ -26,7 +26,23 @@
   (for/sum ((i (in-range len)))
     (* (vector-ref v i) (- i (/ len 2)))))
 
+(define (shift v)
+  (list->vector (reverse (cdr (reverse (cons 0 (vector->list v)))))))
+
 (define (go n v)
-  (if (= n 0)
-      (score v)
-      (go (- n 1) (evolve v))))
+  (define seen (make-hash))
+  (define (cycle fp m period)
+    (define dist (/ (- n m) period))
+    (+ (score fp) (* (for/sum ((i (in-vector fp))) i) dist)))
+  (define (worker i v)
+    (if (hash-has-key? seen v)
+        (cycle v i (- i (hash-ref seen v)))
+        (if (= n i)
+            (score v)
+            (begin
+              (hash-set! seen (shift v) i)
+              (worker (+ i 1) (evolve v))))))
+  (worker 0 v))
+
+(go 20 (make-start))
+(go 50000000000 (make-start))
