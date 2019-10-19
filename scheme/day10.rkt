@@ -38,7 +38,7 @@
   (for-each paint sparks)
   (vector-map displayln lcd)
   lcd)
-
+ 
 (define t (find-time))
 (displayln t)
 (draw-points t)

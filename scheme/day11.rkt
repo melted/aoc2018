@@ -11,11 +11,10 @@
              ((dx (in-range x (+ x n)))
               (dy (in-range y (+ y n))))
     (+ acc (power-level dx dy))))
-
+ 
 (define (power-levels n)
   (for*/list ((x (in-range 1 (- 301 n))) (y (in-range 1 (- 301 n))))
                  (list (sum-levels x y n) x y n)))
-
 
 (define (solve n)
   (car (sort (power-levels n) (λ (a b) (> (car a) (car b))))))
