@@ -13,7 +13,7 @@
 (define (evolve v)
   (define nv (make-vector 1024 0))
   (define (window v n)
-    (λ (i) (for/sum ((j (in-range n))) (* (vector-ref v (+ i j)) (expt 2 j)))))
+    (λ (i) (for/sum ((j (in-range n)) (k (in-vector v i (+ i n)))) (* k (expt 2 j)))))
   (when (for/or ((i '(2 3 1020 1021))) (= (vector-ref v i) 1))
     (error "Overflow!"))
   (define lookup (window v 5))
@@ -35,13 +35,12 @@
     (define dist (/ (- n m) period))
     (+ (score fp) (* (for/sum ((i (in-vector fp))) i) dist)))
   (define (worker i v)
-    (if (hash-has-key? seen v)
-        (cycle v i (- i (hash-ref seen v)))
-        (if (= n i)
-            (score v)
-            (begin
-              (hash-set! seen (shift v) i)
-              (worker (+ i 1) (evolve v))))))
+    (cond
+      ((hash-has-key? seen v) (cycle v i (- i (hash-ref seen v))))
+      ((= n i) (score v))
+      (else
+       (hash-set! seen (shift v) i)
+       (worker (+ i 1) (evolve v)))))
   (worker 0 v))
 
 (go 20 (make-start))
